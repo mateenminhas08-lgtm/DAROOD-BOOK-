@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#16a34a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>گلدستۂ درود</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary: #16a34a;
+      --primary-light: #22c55e;
+      --primary-dark: #14532d;
+      --gold: #eab308;
+      --gold-bright: #fbbf24;
+      --gold-dark: #a16207;
+      --emerald: #059669;
+      --teal: #0d9488;
+      --accent-1: #16a34a;
+      --accent-2: #059669;
+      --accent-3: #0d9488;
+      --accent-4: #7c3aed;
+      --accent-5: #dc2626;
+      --accent-6: #ea580c;
+      --accent-7: #0284c7;
+      --accent-8: #db2777;
+      --bg-app: #fdf6e3;
+      --bg-surface: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #14532d;
+      --text-secondary: #4a5568;
+      --text-muted: #718096;
+      --text-white: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 2px 8px rgba(20,83,45,0.08);
+      --shadow-md: 0 4px 20px rgba(20,83,45,0.12);
+      --shadow-lg: 0 8px 32px rgba(20,83,45,0.18);
+      --font-urdu: 'Noto Nastaliq Urdu', serif;
+      --font-ui: 'Poppins', sans-serif;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      --radius-full: 9999px;
+      --transition: 200ms ease;
+      --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body {
+      font-family: var(--font-urdu);
+      color: var(--text-primary);
+      background:
+        linear-gradient(135deg, rgba(22,163,74,0.04) 25%, transparent 25%, transparent 75%, rgba(22,163,74,0.04) 75%),
+        linear-gradient(135deg, rgba(22,163,74,0.04) 25%, transparent 25%, transparent 75%, rgba(22,163,74,0.04) 75%),
+        linear-gradient(180deg, #fdf6e3 0%, #f5e6c8 100%);
+      background-size: 40px 40px, 40px 40px, 100% 100%;
+      background-position: 0 0, 20px 20px, 0 0;
+      background-attachment: fixed;
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      padding-top: var(--safe-top);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    @media(min-width: 481px) {
+      body {
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+        box-shadow: 0 0 60px rgba(20,83,45,0.08);
+      }
+    }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 4px; }
+
+    .hidden-input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* ========== HEADER ========== */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(135deg, #14532d 0%, #16a34a 50%, #059669 100%);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 24px rgba(20,83,45,0.25);
+      min-height: 54px;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-brand .brand-icon {
+      font-size: 22px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+
+    .header-brand h1 {
+      font-family: var(--font-urdu);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      text-shadow: 0 2px 8px rgba(234,179,8,0.4);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-btn {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.12);
+      color: var(--text-white);
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .header-btn:active {
+      transform: scale(0.92);
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* ========== TAB BAR ========== */
+    .tab-bar {
+      display: flex;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 54px;
+      z-index: 99;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 14px 8px;
+      border: none;
+      background: none;
+      font-family: var(--font-urdu);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+      transition: color var(--transition);
+    }
+
+    .tab-btn.active {
+      color: var(--gold-dark);
+    }
+
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-bright));
+      border-radius: 3px 3px 0 0;
+      transform: scaleX(0);
+      transition: transform var(--transition);
+    }
+
+    .tab-btn.active::after {
+      transform: scaleX(1);
+    }
+
+    .tab-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ========== SEARCH BAR ========== */
+    .search-bar {
+      background: var(--bg-surface);
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar.open {
+      max-height: 60px;
+      padding: 10px 14px;
+      opacity: 1;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-full);
+      font-family: var(--font-urdu);
+      font-size: 14px;
+      outline: none;
+      direction: rtl;
+      background: var(--bg-app);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
+    }
+
+    .search-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: var(--bg-app);
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .search-close:active {
+      transform: scale(0.92);
+    }
+
+    /* ========== MAIN CONTENT ========== */
+    .main-content {
+      padding: 12px;
+      padding-bottom: calc(40px + var(--safe-bottom));
+    }
+
+    /* ========== BANNER ========== */
+    .banner {
+      text-align: center;
+      padding: 20px 16px;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(22,163,74,0.08), rgba(234,179,8,0.12));
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(234,179,8,0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner::before {
+      content: '﷽';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 120px;
+      color: rgba(234,179,8,0.06);
+      font-family: var(--font-urdu);
+      pointer-events: none;
+    }
+
+    .banner h2 {
+      font-family: var(--font-urdu);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--gold-dark);
+      line-height: 2;
+      position: relative;
+    }
+
+    .banner .sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      position: relative;
+    }
+
+    /* ========== INFO CARD ========== */
+    .info-card {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: var(--text-white);
+      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-md), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
+    .info-card .count {
+      font-size: 26px;
+      font-weight: 700;
+      font-family: var(--font-urdu);
+    }
+
+    .info-card .label {
+      font-size: 12px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+
+    .info-card .icon {
+      font-size: 36px;
+      opacity: 0.25;
+    }
+
+    /* ========== CARD GRID ========== */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    /* ========== DAROOD CARD ========== */
+    @keyframes cardEnter {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .darood-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      animation: cardEnter 400ms ease-out forwards;
+      opacity: 0;
+      position: relative;
+    }
+
+    .darood-card:active {
+      transform: scale(0.97);
+    }
+
+
+
+    .card-accent {
+      height: 5px;
+    }
+
+    .card-thumb {
+      position: relative;
+      padding: 10px;
+    }
+
+    .card-frame {
+      position: relative;
+      aspect-ratio: 16/9;
+      border: 2px solid var(--gold);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: linear-gradient(145deg, #fefce8, #fef3c7);
+    }
+
+    .card-frame::before,
+    .card-frame::after {
+      content: '✦';
+      position: absolute;
+      color: var(--gold);
+      font-size: 8px;
+      z-index: 2;
+    }
+
+    .card-frame::before { top: 3px; right: 4px; }
+    .card-frame::after { bottom: 3px; left: 4px; }
+
+    .card-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: linear-gradient(145deg, #fefce8, #fef3c7);
+    }
+
+    /* Empty card with plus icon */
+    .card-empty {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(145deg, rgba(22,163,74,0.04), rgba(234,179,8,0.06));
+      transition: background 0.15s ease;
+      cursor: pointer;
+    }
+
+    .darood-card:active .card-empty {
+      background: linear-gradient(145deg, rgba(22,163,74,0.12), rgba(234,179,8,0.16));
+    }
+
+    .card-empty .plus-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--emerald));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 6px 20px rgba(22,163,74,0.4);
+      transition: transform 0.15s ease;
+      pointer-events: none;
+    }
+
+    .darood-card:active .plus-icon {
+      transform: scale(0.88);
+    }
+
+    .card-empty .plus-label {
+      margin-top: 8px;
+      font-size: 10px;
+      color: var(--primary);
+      font-family: var(--font-urdu);
+      font-weight: 700;
+      pointer-events: none;
+    }
+
+    /* Add new card style */
+    .add-card {
+      opacity: 0.85;
+    }
+
+    .add-card:active {
+      opacity: 1;
+    }
+
+    .add-new-empty {
+      background: linear-gradient(145deg, rgba(156,163,175,0.1), rgba(107,114,128,0.15)) !important;
+    }
+
+    .add-new-icon {
+      background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+      box-shadow: 0 4px 16px rgba(107,114,128,0.35) !important;
+    }
+
+    .read-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--emerald));
+      color: white;
+      font-size: 9px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-urdu);
+      z-index: 3;
+      box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+    }
+
+    .card-info {
+      padding: 8px 12px 12px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    .card-meta {}
+
+    .card-number {
+      font-size: 10px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card-title {
+      font-family: var(--font-urdu);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1.8;
+      margin-top: 2px;
+    }
+
+    .card-fav {
+      border: none;
+      background: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px;
+      min-width: 34px;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease;
+    }
+
+    .card-fav:active {
+      transform: scale(1.25);
+    }
+
+    .card-fav .fa-heart {
+      transition: color 0.2s ease;
+    }
+
+    .card-fav .heart-empty {
+      color: #d1d5db;
+    }
+
+    .card-fav .heart-filled {
+      color: #ef4444;
+    }
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.3); }
+      50% { transform: scale(1.1); }
+    }
+
+    .card-fav.animate {
+      animation: heartBeat 0.4s ease;
+    }
+
+    /* ========== EMPTY STATE ========== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state .empty-title {
+      font-family: var(--font-urdu);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state .empty-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+
+    /* ========== FULLSCREEN VIEWER ========== */
+    .viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: #000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+    .viewer.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .viewer-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      padding: 10px 14px;
+      padding-top: calc(10px + var(--safe-top));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(180deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+      pointer-events: auto;
+    }
+
+    .viewer-btn {
+      width: 42px;
+      height: 42px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 17px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all var(--transition);
+    }
+
+    .viewer-btn:active {
+      transform: scale(0.9);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .viewer-title {
+      flex: 1;
+      text-align: center;
+      font-family: var(--font-urdu);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gold-bright);
+      padding: 0 10px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .viewer-zoom {
+      display: flex;
+      gap: 6px;
+    }
+
+    .viewer-zoom .viewer-btn {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+    }
+
+    .viewer-body {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .viewer-body img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 0;
+      user-select: none;
+      -webkit-user-drag: none;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.25s ease;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    .viewer-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 20;
+      padding: 14px 14px;
+      padding-bottom: calc(14px + var(--safe-bottom));
+      background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+      pointer-events: auto;
+    }
+
+    .viewer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+
+    .viewer-action {
+      width: 48px;
+      height: 48px;
+      border: none;
+      border-radius: var(--radius-full);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .viewer-action:active {
+      transform: scale(0.9);
+    }
+
+    .viewer-action.nav {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .viewer-action.fav {
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.12);
+      color: white;
+      font-size: 24px;
+    }
+
+    .viewer-action.fav.is-fav {
+      background: rgba(239,68,68,0.25);
+      color: #fca5a5;
+    }
+
+    .viewer-action.share {
+      background: rgba(37,211,102,0.2);
+      color: #25d366;
+    }
+
+    .viewer-action.upload {
+      background: rgba(234,179,8,0.2);
+      color: var(--gold-bright);
+    }
+
+    .viewer-meta {
+      text-align: center;
+      color: rgba(255,255,255,0.6);
+      font-size: 12px;
+      font-family: var(--font-urdu);
+    }
+
+    .viewer-meta .pos {
+      color: var(--gold-bright);
+      font-weight: 700;
+    }
+
+    .viewer-meta .reads {
+      margin-top: 4px;
+      font-size: 11px;
+    }
+
+    /* ========== BOTTOM SHEET EDITOR ========== */
+    .editor-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 600;
+      background: rgba(0,0,0,0.6);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .editor-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .editor-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 601;
+      background: linear-gradient(180deg, #1a1a1a 0%, #0f0f0f 100%);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
+      padding-bottom: var(--safe-bottom);
+    }
+
+    .editor-sheet.open {
+      transform: translateY(0);
+    }
+
+    .editor-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 4px;
+      margin: 12px auto 8px;
+    }
+
+    .editor-header {
+      padding: 8px 18px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .editor-header h3 {
+      font-family: var(--font-urdu);
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .editor-header h3 i {
+      color: var(--gold-bright);
+    }
+
+    .editor-close {
+      width: 38px;
+      height: 38px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .editor-close:active {
+      transform: scale(0.9);
+    }
+
+    .editor-canvas-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      min-height: 300px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .editor-canvas-area canvas {
+      display: block;
+      max-width: calc(100% - 24px);
+      max-height: calc(100% - 24px);
+      width: auto;
+      height: auto;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      object-fit: contain;
+    }
+
+    /* Crop overlay */
+    .crop-container {
+      position: absolute;
+      display: none;
+    }
+
+    .crop-container.active {
+      display: block;
+    }
+
+    .crop-box {
+      position: absolute;
+      border: 2px solid var(--gold-bright);
+      background: transparent;
+      cursor: move;
+      touch-action: none;
+    }
+
+    .crop-box::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px dashed rgba(255,255,255,0.4);
+    }
+
+    .crop-mask {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .crop-handle {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      background: var(--gold-bright);
+      border-radius: var(--radius-full);
+      border: 2px solid white;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      touch-action: none;
+    }
+
+    .crop-handle.tl { top: -12px; left: -12px; cursor: nw-resize; }
+    .crop-handle.tr { top: -12px; right: -12px; cursor: ne-resize; }
+    .crop-handle.bl { bottom: -12px; left: -12px; cursor: sw-resize; }
+    .crop-handle.br { bottom: -12px; right: -12px; cursor: se-resize; }
+
+    .editor-tools {
+      padding: 18px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .tool-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .tool-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 18px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all var(--transition);
+      min-width: 72px;
+    }
+
+    .tool-btn span {
+      font-size: 11px;
+      font-family: var(--font-urdu);
+      font-weight: 700;
+    }
+
+    .tool-btn:active {
+      transform: scale(0.95);
+      background: rgba(255,255,255,0.15);
+    }
+
+    .tool-btn.active {
+      background: var(--primary);
+    }
+
+    .tool-btn.crop-apply {
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+      display: none;
+    }
+
+    .tool-btn.crop-apply.show {
+      display: flex;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .editor-cancel {
+      padding: 14px 28px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-family: var(--font-urdu);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+
+    .editor-cancel:active {
+      transform: scale(0.97);
+    }
+
+    .editor-save {
+      padding: 14px 36px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      font-family: var(--font-urdu);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+      transition: all var(--transition);
+    }
+
+    .editor-save:active {
+      transform: scale(0.97);
+    }
+
+    /* ========== SETTINGS MODAL ========== */
+    .settings-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .settings-backdrop.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .settings-modal {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 401;
+      background: var(--bg-surface);
+      border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      padding-bottom: var(--safe-bottom);
+    }
+
+    .settings-modal.open {
+      transform: translateY(0);
+    }
+
+    .settings-handle {
+      width: 40px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      margin: 10px auto;
+    }
+
+    .settings-header {
+      padding: 6px 18px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-header h2 {
+      font-family: var(--font-urdu);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .settings-close {
+      width: 36px;
+      height: 36px;
+      border: none;
+      border-radius: var(--radius-full);
+      background: var(--bg-app);
+      color: var(--text-muted);
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .settings-section {
+      padding: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .settings-section:last-child {
+      border-bottom: none;
+    }
+
+    .settings-section h3 {
+      font-family: var(--font-urdu);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-row .val {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .font-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .font-control button {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-full);
+      background: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .font-control button:active {
+      transform: scale(0.92);
+      border-color: var(--primary);
+    }
+
+    .font-control .size {
+      font-size: 16px;
+      font-weight: 700;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: var(--font-urdu);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-danger {
+      padding: 10px 20px;
+      background: #dc2626;
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      font-family: var(--font-urdu);
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-danger:active {
+      transform: scale(0.97);
+    }
+
+    .about-box {
+      text-align: center;
+    }
+
+    .about-box .name {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--gold-dark);
+      font-family: var(--font-urdu);
+    }
+
+    .about-box .ver {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 4px 0 12px;
+    }
+
+    .about-box .credit {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-family: var(--font-urdu);
+      background: var(--bg-app);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+    }
+
+    /* ========== TOAST ========== */
+    .toast-wrap {
+      position: fixed;
+      bottom: calc(24px + var(--safe-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      width: 90%;
+      max-width: 340px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--primary-dark);
+      color: white;
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      font-family: var(--font-urdu);
+      font-size: 14px;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      animation: toastIn 0.35s ease, toastOut 0.35s ease 2s forwards;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes toastOut {
+      from {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+    }
+
+    .view-wrap {
+      transition: opacity 0.2s ease;
+    }
+
+    .view-wrap.hidden {
+      display: none;
+    }
+
+    .view-wrap.fading {
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <input type="file" class="hidden-input" id="importInput" accept=".json">
+
+  <!-- ========== HEADER ========== -->
+  <header class="app-header">
+    <div class="header-brand">
+      <span class="brand-icon">🌸</span>
+      <h1>گلدستۂ درود</h1>
+    </div>
+    <div class="header-actions">
+      <button class="header-btn" id="searchBtn" aria-label="تلاش">
+        <i class="fas fa-search"></i>
+      </button>
+      <button class="header-btn" id="settingsBtn" aria-label="ترتیبات">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== TABS ========== -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="all">تمام درود</button>
+    <button class="tab-btn" data-tab="fav">پسندیدہ</button>
+  </nav>
+
+  <!-- ========== SEARCH ========== -->
+  <div class="search-bar" id="searchBar">
+    <input type="text" id="searchInput" placeholder="درود تلاش کریں...">
+    <button class="search-close" id="searchClose">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <!-- ========== MAIN ========== -->
+  <main class="main-content">
+    <!-- ALL VIEW -->
+    <div class="view-wrap" id="viewAll">
+      <div class="banner">
+        <h2>الصلوٰۃ والسلام علیک یا رسول اللہ ﷺ</h2>
+        <p class="sub" id="todayTip"></p>
+      </div>
+      <div class="info-card">
+        <div>
+          <div class="count" id="daroodCountDisplay">٣٣</div>
+          <div class="label">درود شریف</div>
+        </div>
+        <div class="icon">🌸</div>
+      </div>
+      <div class="card-grid" id="gridAll"></div>
+      <div class="empty-state" id="noMatch" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">کوئی درود نہیں ملا</div>
+        <div class="empty-hint">دوسرے الفاظ سے تلاش کریں</div>
+      </div>
+    </div>
+
+    <!-- FAV VIEW -->
+    <div class="view-wrap hidden" id="viewFav">
+      <div class="card-grid" id="gridFav"></div>
+      <div class="empty-state" id="noFav" style="display:none">
+        <div class="empty-icon">❤️</div>
+        <div class="empty-title">کوئی پسندیدہ نہیں</div>
+        <div class="empty-hint">درود پر ❤️ دبائیں</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== VIEWER ========== -->
+  <div class="viewer" id="viewer">
+    <div class="viewer-top">
+      <button class="viewer-btn" id="viewerClose"><i class="fas fa-times"></i></button>
+      <div class="viewer-title" id="viewerTitle"></div>
+      <div class="viewer-zoom">
+        <button class="viewer-btn" id="zoomOut"><i class="fas fa-minus"></i></button>
+        <button class="viewer-btn" id="zoomIn"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+    <div class="viewer-body" id="viewerBody">
+      <img id="viewerImg" src="" alt="">
+    </div>
+    <div class="viewer-bottom">
+      <div class="viewer-actions">
+        <button class="viewer-action nav" id="viewerPrev"><i class="fas fa-chevron-right"></i></button>
+        <button class="viewer-action upload" id="viewerUpload"><i class="fas fa-camera"></i></button>
+        <button class="viewer-action fav" id="viewerFav"><i class="fas fa-heart"></i></button>
+        <button class="viewer-action share" id="viewerShare"><i class="fab fa-whatsapp"></i></button>
+        <button class="viewer-action nav" id="viewerNext"><i class="fas fa-chevron-left"></i></button>
+      </div>
+      <div class="viewer-meta">
+        <div class="pos" id="viewerPos"></div>
+        <div class="reads" id="viewerReads"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== EDITOR BOTTOM SHEET ========== -->
+  <div class="editor-backdrop" id="editorBackdrop"></div>
+  <div class="editor-sheet" id="editorSheet">
+    <div class="editor-handle"></div>
+    <div class="editor-header">
+      <h3><i class="fas fa-wand-magic-sparkles"></i> تصویر ایڈیٹر</h3>
+      <button class="editor-close" id="editorClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="editor-canvas-area" id="canvasArea">
+      <canvas id="editorCanvas"></canvas>
+      <div class="crop-container" id="cropContainer">
+        <div class="crop-box" id="cropBox">
+          <div class="crop-handle tl" data-h="tl"></div>
+          <div class="crop-handle tr" data-h="tr"></div>
+          <div class="crop-handle bl" data-h="bl"></div>
+          <div class="crop-handle br" data-h="br"></div>
+        </div>
+      </div>
+    </div>
+    <div class="editor-tools">
+      <div class="tool-row">
+        <button class="tool-btn" id="rotateBtn">
+          <i class="fas fa-rotate-right"></i>
+          <span>گھمائیں</span>
+        </button>
+        <button class="tool-btn" id="cropToggle">
+          <i class="fas fa-crop-simple"></i>
+          <span>کاٹیں</span>
+        </button>
+        <button class="tool-btn crop-apply" id="cropApply">
+          <i class="fas fa-check"></i>
+          <span>لگائیں</span>
+        </button>
+      </div>
+      <div class="action-row">
+        <button class="editor-cancel" id="editorCancel">منسوخ</button>
+        <button class="editor-save" id="editorSave">
+          <i class="fas fa-save"></i>
+          محفوظ کریں
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS ========== -->
+  <div class="settings-backdrop" id="settingsBackdrop"></div>
+  <div class="settings-modal" id="settingsModal">
+    <div class="settings-handle"></div>
+    <div class="settings-header">
+      <h2>⚙️ ترتیبات</h2>
+      <button class="settings-close" id="settingsClose"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="settings-section">
+      <h3><i class="fas fa-text-height"></i> خط کا سائز</h3>
+      <div class="font-control">
+        <button id="fontMinus">−</button>
+        <span class="size" id="fontLabel">١٢</span>
+        <button id="fontPlus">+</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3><i class="fas fa-chart-pie"></i> اعداد و شمار</h3>
+      <div id="statsBox"></div>
+      <div class="btn-row" style="margin-top:12px">
+        <button class="btn-danger" id="clearStats">🗑 صاف کریں</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <h3><i class="fas fa-database"></i> ڈیٹا</h3>
+      <div class="btn-row">
+        <button class="btn-primary" id="exportData"><i class="fas fa-download"></i> برآمد</button>
+        <button class="btn-primary" id="importData"><i class="fas fa-upload"></i> درآمد</button>
+      </div>
+      <div class="btn-row" style="margin-top:10px">
+        <button class="btn-danger" id="clearAll">⚠️ سب صاف کریں</button>
+      </div>
+    </div>
+
+    <div class="settings-section about-box">
+      <div class="name">🌸 گلدستۂ درود</div>
+      <div class="ver">Version 1.0</div>
+      <div class="credit">بنایا گیا: متین حیدر منہاس کے لیے</div>
+    </div>
+  </div>
+
+  <!-- ========== TOAST ========== -->
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <script>
+    const COLORS = ['#16a34a','#059669','#0d9488','#7c3aed','#dc2626','#ea580c','#0284c7','#db2777'];
+
+    const UD = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
+    const toUrdu = n => String(n).split('').map(d=>UD[+d]||d).join('');
+
+    const ls = {
+      get:(k,d)=>{ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch{return d;} },
+      set:(k,v)=>{ try{ localStorage.setItem(k,JSON.stringify(v)); }catch{} }
+    };
+
+    let favs = ls.get('darood_favorites',[]);
+    let reads = ls.get('darood_read_counts',{});
+    let images = ls.get('darood_images',{});
+    let config = ls.get('darood_settings',{fontSize:12});
+    let customTitles = ls.get('darood_titles',{});
+    let daroodCount = ls.get('darood_count', 33);
+
+    function getDaroods(){
+      var list = [];
+      for(var i = 1; i <= daroodCount; i++){
+        list.push({
+          id: i,
+          num: i,
+          title: customTitles[i] || '',
+          color: COLORS[(i-1) % 8]
+        });
+      }
+      return list;
+    }
+
+    function addNewDarood(){
+      daroodCount++;
+      ls.set('darood_count', daroodCount);
+      refresh();
+      toast('نیا درود شامل ہو گیا');
+      setTimeout(function(){
+        var grid = document.getElementById('gridAll');
+        if(grid) grid.scrollTop = grid.scrollHeight;
+        window.scrollTo(0, document.body.scrollHeight);
+      }, 100);
+    }
+
+    function setDaroodTitle(id, title){
+      customTitles[id] = title;
+      ls.set('darood_titles', customTitles);
+    }
+
+    function deleteDarood(id){
+      if(daroodCount <= 1) return;
+      if(id === daroodCount){
+        delete images[id];
+        delete customTitles[id];
+        delete reads[id];
+        favs = favs.filter(f => f !== id);
+        daroodCount--;
+        ls.set('darood_count', daroodCount);
+        ls.set('darood_images', images);
+        ls.set('darood_titles', customTitles);
+        ls.set('darood_read_counts', reads);
+        ls.set('darood_favorites', favs);
+        refresh();
+        toast('درود حذف ہو گیا');
+      } else {
+        toast('صرف آخری درود حذف ہو سکتا ہے');
+      }
+    }
+
+    const isFav = id => favs.includes(id);
+    const getImg = id => images[id] || null;
+
+    function toggleFav(id){
+      if(isFav(id)){
+        favs = favs.filter(f=>f!==id);
+        ls.set('darood_favorites',favs);
+        toast('پسندیدہ سے نکال دیا');
+        return false;
+      }
+      favs.push(id);
+      ls.set('darood_favorites',favs);
+      toast('پسندیدہ میں شامل ❤️');
+      return true;
+    }
+
+    function incRead(id){
+      reads[id] = (reads[id]||0)+1;
+      ls.set('darood_read_counts',reads);
+    }
+
+    function saveImg(id,data){
+      images[id] = data;
+      ls.set('darood_images',images);
+    }
+
+    function toast(msg){
+      const t = document.createElement('div');
+      t.className = 'toast';
+      t.textContent = msg;
+      document.getElementById('toastWrap').appendChild(t);
+      setTimeout(()=>t.remove(),2500);
+    }
+
+    let activeTab = 'all';
+    let searchQ = '';
+
+    function buildCard(d,i){
+      const card = document.createElement('div');
+      card.className = 'darood-card';
+      card.style.animationDelay = (i*35)+'ms';
+
+      const img = getImg(d.id);
+      const rc = reads[d.id]||0;
+      const fav = isFav(d.id);
+
+      let thumbHTML = img
+        ? `<img src="${img}" alt="${d.title}">`
+        : `<div class="card-empty">
+             <div class="plus-icon"><i class="fas fa-plus"></i></div>
+             <div class="plus-label">تصویر لگائیں</div>
+           </div>`;
+
+      var titleDisplay = d.title ? d.title : '';
+
+      card.innerHTML = `
+        <div class="card-accent" style="background:linear-gradient(90deg,${d.color},${d.color}cc)"></div>
+        <div class="card-thumb">
+          ${rc>0?`<div class="read-badge">${toUrdu(rc)}</div>`:''}
+          <div class="card-frame">${thumbHTML}</div>
+        </div>
+        <div class="card-info">
+          <div class="card-meta">
+            <div class="card-number">🌸 درود ${toUrdu(d.num)}</div>
+            ${titleDisplay ? `<div class="card-title" style="font-size:${config.fontSize}px">${titleDisplay}</div>` : ''}
+          </div>
+          <button class="card-fav" data-id="${d.id}">
+            <i class="fas fa-heart ${fav?'heart-filled':'heart-empty'}"></i>
+          </button>
+        </div>
+      `;
+
+      card.addEventListener('click', e => {
+        if(e.target.closest('.card-fav')) return;
+        e.stopPropagation();
+        var hasImage = !!getImg(d.id);
+        if(hasImage){
+          openViewer(d.id);
+        } else {
+          triggerUpload(d.id);
+        }
+      });
+
+      var favBtn = card.querySelector('.card-fav');
+      favBtn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        var added = toggleFav(d.id);
+        favBtn.querySelector('i').className = 'fas fa-heart ' + (added ? 'heart-filled' : 'heart-empty');
+        favBtn.classList.remove('animate');
+        void favBtn.offsetWidth;
+        favBtn.classList.add('animate');
+        refresh();
+      });
+
+      return card;
+    }
+
+    function renderAll(){
+      var grid = document.getElementById('gridAll');
+      var noMatch = document.getElementById('noMatch');
+      grid.innerHTML = '';
+
+      var allDaroods = getDaroods();
+      var list = allDaroods;
+      if(searchQ){
+        list = allDaroods.filter(function(d){
+          return d.title.includes(searchQ) || String(d.num).includes(searchQ);
+        });
+      }
+
+      if(!list.length && searchQ){
+        noMatch.style.display = 'block';
+        grid.style.display = 'none';
+      } else {
+        noMatch.style.display = 'none';
+        grid.style.display = '';
+        list.forEach(function(d,i){ grid.appendChild(buildCard(d,i)); });
+        if(!searchQ){
+          grid.appendChild(buildAddCard());
+        }
+      }
+    }
+
+    function buildAddCard(){
+      var card = document.createElement('div');
+      card.className = 'darood-card add-card';
+      card.innerHTML = `
+        <div class="card-accent" style="background:linear-gradient(90deg,#9ca3af,#6b7280)"></div>
+        <div class="card-thumb">
+          <div class="card-frame">
+            <div class="card-empty add-new-empty">
+              <div class="plus-icon add-new-icon"><i class="fas fa-plus"></i></div>
+              <div class="plus-label">نیا درود شامل کریں</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-info">
+          <div class="card-meta">
+            <div class="card-number">➕ مزید</div>
+            <div class="card-title" style="font-size:${config.fontSize}px">نیا درود</div>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', function(e){
+        e.stopPropagation();
+        addNewDarood();
+      });
+      return card;
+    }
+
+    function renderFav(){
+      var grid = document.getElementById('gridFav');
+      var noFav = document.getElementById('noFav');
+      grid.innerHTML = '';
+
+      var allDaroods = getDaroods();
+      var list = allDaroods.filter(function(d){ return isFav(d.id); });
+      if(!list.length){
+        noFav.style.display = 'block';
+        grid.style.display = 'none';
+      } else {
+        noFav.style.display = 'none';
+        grid.style.display = '';
+        list.forEach(function(d,i){ grid.appendChild(buildCard(d,i)); });
+      }
+    }
+
+    function refresh(){
+      document.getElementById('daroodCountDisplay').textContent = toUrdu(daroodCount);
+      if(activeTab==='all') renderAll();
+      else renderFav();
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const tab = btn.dataset.tab;
+        if(tab===activeTab) return;
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const oldV = document.getElementById(activeTab==='all'?'viewAll':'viewFav');
+        const newV = document.getElementById(tab==='all'?'viewAll':'viewFav');
+
+        oldV.classList.add('fading');
+        setTimeout(()=>{
+          oldV.classList.add('hidden');
+          oldV.classList.remove('fading');
+          newV.classList.remove('hidden');
+          activeTab = tab;
+          refresh();
+        },200);
+      });
+    });
+
+    const searchBar = document.getElementById('searchBar');
+    const searchInput = document.getElementById('searchInput');
+
+    document.getElementById('searchBtn').addEventListener('click',()=>{
+      searchBar.classList.toggle('open');
+      if(searchBar.classList.contains('open')) setTimeout(()=>searchInput.focus(),300);
+      else { searchInput.value=''; searchQ=''; renderAll(); }
+    });
+
+    document.getElementById('searchClose').addEventListener('click',()=>{
+      searchBar.classList.remove('open');
+      searchInput.value=''; searchQ=''; renderAll();
+    });
+
+    searchInput.addEventListener('input',()=>{
+      searchQ = searchInput.value.trim();
+      renderAll();
+    });
+
+    let viewerIdx = 0;
+    let viewerZoom = 1;
+    let panX=0, panY=0;
+
+    const viewer = document.getElementById('viewer');
+    const viewerImg = document.getElementById('viewerImg');
+    const viewerBody = document.getElementById('viewerBody');
+
+    function getList(){
+      var allDaroods = getDaroods();
+      if(activeTab==='fav') return allDaroods.filter(function(d){ return isFav(d.id); });
+      if(searchQ) return allDaroods.filter(function(d){ return d.title.includes(searchQ) || String(d.num).includes(searchQ); });
+      return allDaroods;
+    }
+
+    function openViewer(id){
+      const list = getList();
+      const idx = list.findIndex(d=>d.id===id);
+      if(idx===-1) return;
+      viewerIdx = idx;
+      incRead(id);
+
+      viewerImg.style.transition = 'none';
+      viewerImg.style.transform = 'scale(0.85)';
+      viewerImg.style.opacity = '0';
+
+      showInViewer(list[idx]);
+      viewer.classList.add('open');
+      document.body.style.overflow = 'hidden';
+
+      requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{
+          viewerImg.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease';
+          viewerImg.style.transform = 'scale(1)';
+          viewerImg.style.opacity = '1';
+          setTimeout(()=>{
+            viewerImg.style.transition = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.25s ease';
+          }, 420);
+        });
+      });
+    }
+
+    function closeViewer(){
+      viewerImg.style.transition = 'transform 0.25s ease, opacity 0.2s ease';
+      viewerImg.style.transform = 'scale(0.9)';
+      viewerImg.style.opacity = '0';
+      setTimeout(()=>{
+        viewer.classList.remove('open');
+        document.body.style.overflow = '';
+        resetZoom();
+        refresh();
+      }, 250);
+    }
+
+    function showInViewer(d){
+      var img = getImg(d.id);
+      viewerImg.src = img || makePlaceholder(d);
+      viewerImg.alt = 'درود ' + toUrdu(d.num);
+      var titleText = d.title ? d.title : ('درود ' + toUrdu(d.num));
+      document.getElementById('viewerTitle').textContent = titleText;
+
+      var list = getList();
+      var idx = list.findIndex(function(x){ return x.id===d.id; });
+      document.getElementById('viewerPos').textContent = toUrdu(idx+1) + ' / ' + toUrdu(list.length);
+      document.getElementById('viewerReads').textContent = toUrdu(reads[d.id]||0) + ' بار پڑھا';
+
+      var fb = document.getElementById('viewerFav');
+      fb.classList.toggle('is-fav', isFav(d.id));
+      viewerZoom = 1;
+      panX = 0;
+      panY = 0;
+    }
+
+    function makePlaceholder(d){
+      var titleLine = d.title ? d.title : '';
+      return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><rect fill="#fefce8" width="960" height="540" rx="16"/><text x="480" y="200" text-anchor="middle" font-size="72">🌸</text>' + (titleLine ? '<text x="480" y="300" text-anchor="middle" font-family="serif" font-size="36" fill="#a16207">' + titleLine + '</text>' : '') + '<text x="480" y="360" text-anchor="middle" font-size="28" fill="#718096">درود نمبر ' + d.num + '</text><text x="480" y="440" text-anchor="middle" font-size="20" fill="#16a34a">📷 تصویر لگانے کے لیے کیمرہ دبائیں</text></svg>');
+    }
+
+    function navViewer(dir){
+      const list = getList();
+      let ni = viewerIdx + dir;
+      if(ni<0) ni = list.length-1;
+      if(ni>=list.length) ni = 0;
+      viewerIdx = ni;
+      const d = list[ni];
+      incRead(d.id);
+
+      const sd = dir>0 ? -1 : 1;
+      viewerImg.style.transition = 'transform 0.18s ease-in, opacity 0.18s ease-in';
+      viewerImg.style.transform = `translateX(${sd*120}px) scale(0.92)`;
+      viewerImg.style.opacity = '0';
+
+      setTimeout(()=>{
+        showInViewer(d);
+        viewerImg.style.transition = 'none';
+        viewerImg.style.transform = `translateX(${-sd*120}px) scale(0.92)`;
+        viewerImg.style.opacity = '0';
+        requestAnimationFrame(()=>{
+          viewerImg.style.transition = 'transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.3s ease';
+          viewerImg.style.transform = 'scale(1)';
+          viewerImg.style.opacity = '1';
+        });
+      },180);
+    }
+
+    function resetZoom(){
+      viewerZoom = 1;
+      panX = 0;
+      panY = 0;
+      viewerImg.style.transform = 'scale(1)';
+    }
+
+    function applyZoom(){
+      viewerImg.style.transition = 'transform 0.2s ease';
+      viewerImg.style.transform = `scale(${viewerZoom}) translate(${panX}px,${panY}px)`;
+    }
+
+    document.getElementById('viewerClose').addEventListener('click', closeViewer);
+    document.getElementById('viewerPrev').addEventListener('click',()=>navViewer(-1));
+    document.getElementById('viewerNext').addEventListener('click',()=>navViewer(1));
+    document.getElementById('zoomIn').addEventListener('click',()=>{ viewerZoom=Math.min(viewerZoom+0.5,4); applyZoom(); });
+    document.getElementById('zoomOut').addEventListener('click',()=>{ viewerZoom=Math.max(viewerZoom-0.5,0.5); if(viewerZoom<=1){panX=0;panY=0;} applyZoom(); });
+
+    document.getElementById('viewerFav').addEventListener('click',()=>{
+      const d = getList()[viewerIdx];
+      toggleFav(d.id);
+      document.getElementById('viewerFav').classList.toggle('is-fav', isFav(d.id));
+    });
+
+    document.getElementById('viewerShare').addEventListener('click',()=>{
+      const d = getList()[viewerIdx];
+      const msg = `🌸 ${d.title}\n\nاللہ کے رسول ﷺ پر درود بھیجیں\n\n📖 گلدستۂ درود`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
+    });
+
+    document.getElementById('viewerUpload').addEventListener('click',()=>{
+      const d = getList()[viewerIdx];
+      triggerUpload(d.id);
+    });
+
+    let touchX=0, touchY=0, touchT=0, lastTap=0, dragging=false, dragS={x:0,y:0};
+    let pinchD=0, pinchZ=1;
+
+    viewerBody.addEventListener('touchstart',e=>{
+      if(e.touches.length===2){
+        pinchD = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+        pinchZ = viewerZoom;
+        return;
+      }
+      const now = Date.now();
+      if(now-lastTap<280){
+        if(viewerZoom>1) resetZoom(); else { viewerZoom=2; applyZoom(); }
+        lastTap=0; return;
+      }
+      lastTap = now;
+      touchX = e.touches[0].clientX;
+      touchY = e.touches[0].clientY;
+      touchT = now;
+      if(viewerZoom>1){ dragging=true; dragS={x:panX,y:panY}; }
+    },{passive:true});
+
+    viewerBody.addEventListener('touchmove',e=>{
+      if(e.touches.length===2){
+        const d = Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+        viewerZoom = Math.max(0.5,Math.min(4,pinchZ*(d/pinchD)));
+        applyZoom(); return;
+      }
+      if(dragging && viewerZoom>1){
+        panX = dragS.x + (e.touches[0].clientX-touchX)/viewerZoom;
+        panY = dragS.y + (e.touches[0].clientY-touchY)/viewerZoom;
+        viewerImg.style.transition = 'none';
+        viewerImg.style.transform = `scale(${viewerZoom}) translate(${panX}px,${panY}px)`;
+      }
+    },{passive:true});
+
+    viewerBody.addEventListener('touchend',e=>{
+      dragging = false;
+      if(viewerZoom>1) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      const dy = e.changedTouches[0].clientY - touchY;
+      const dt = Date.now() - touchT;
+      if(Math.abs(dx)>50 && dt<350 && Math.abs(dy)<80){
+        if(dx<0) navViewer(1); else navViewer(-1);
+      }
+    },{passive:true});
+
+    document.addEventListener('keydown',e=>{
+      if(!viewer.classList.contains('open')) return;
+      if(e.key==='Escape') closeViewer();
+      if(e.key==='ArrowLeft') navViewer(1);
+      if(e.key==='ArrowRight') navViewer(-1);
+    });
+
+    let editId = null;
+    let origImg = null;
+    let rotation = 0;
+    let cropping = false;
+    let cropR = {x:0,y:0,w:0,h:0};
+
+    const editorBackdrop = document.getElementById('editorBackdrop');
+    const editorSheet = document.getElementById('editorSheet');
+    const canvas = document.getElementById('editorCanvas');
+    const ctx = canvas.getContext('2d');
+    const cropContainer = document.getElementById('cropContainer');
+    const cropBox = document.getElementById('cropBox');
+    function triggerUpload(id){
+      editId = id;
+      var oldInput = document.getElementById('fileInput');
+      if(oldInput) oldInput.remove();
+
+      var fi = document.createElement('input');
+      fi.type = 'file';
+      fi.accept = 'image/*';
+      fi.id = 'fileInput';
+      fi.className = 'hidden-input';
+      fi.setAttribute('aria-hidden','true');
+      document.body.appendChild(fi);
+
+      fi.addEventListener('change', function handler(e){
+        fi.removeEventListener('change', handler);
+        var f = e.target.files && e.target.files[0];
+        if(!f){ fi.remove(); return; }
+        var reader = new FileReader();
+        reader.onload = function(ev){
+          openEditor(ev.target.result);
+          fi.remove();
+        };
+        reader.onerror = function(){
+          toast('تصویر نہیں لگ سکی');
+          fi.remove();
+        };
+        reader.readAsDataURL(f);
+      });
+
+      setTimeout(function(){ fi.click(); }, 50);
+    }
+
+    function openEditor(dataUrl){
+      rotation = 0;
+      cropping = false;
+      cropContainer.classList.remove('active');
+      document.getElementById('cropToggle').classList.remove('active');
+      document.getElementById('cropApply').classList.remove('show');
+
+      const img = new Image();
+      img.onload = () => {
+        origImg = img;
+        drawCanvas();
+        editorBackdrop.classList.add('open');
+        editorSheet.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      };
+      img.src = dataUrl;
+    }
+
+    function closeEditor(){
+      editorBackdrop.classList.remove('open');
+      editorSheet.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function drawCanvas(){
+      if(!origImg) return;
+
+      var w = origImg.naturalWidth || origImg.width;
+      var h = origImg.naturalHeight || origImg.height;
+
+      if(rotation % 180 !== 0){
+        canvas.width = h;
+        canvas.height = w;
+      } else {
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      ctx.save();
+      ctx.translate(canvas.width / 2, canvas.height / 2);
+      ctx.rotate(rotation * Math.PI / 180);
+      ctx.drawImage(origImg, -w / 2, -h / 2, w, h);
+      ctx.restore();
+    }
+
+    document.getElementById('rotateBtn').addEventListener('click',()=>{
+      rotation = (rotation+90)%360;
+      drawCanvas();
+      if(cropping) initCrop();
+    });
+
+    document.getElementById('cropToggle').addEventListener('click',()=>{
+      if(cropping){
+        cropping = false;
+        cropContainer.classList.remove('active');
+        document.getElementById('cropToggle').classList.remove('active');
+        document.getElementById('cropApply').classList.remove('show');
+      } else {
+        cropping = true;
+        document.getElementById('cropToggle').classList.add('active');
+        document.getElementById('cropApply').classList.add('show');
+        initCrop();
+      }
+    });
+
+    function initCrop(){
+      cropContainer.classList.add('active');
+      const cr = canvas.getBoundingClientRect();
+      const ca = document.getElementById('canvasArea').getBoundingClientRect();
+
+      cropContainer.style.left = (cr.left - ca.left) + 'px';
+      cropContainer.style.top = (cr.top - ca.top) + 'px';
+      cropContainer.style.width = cr.width + 'px';
+      cropContainer.style.height = cr.height + 'px';
+
+      const p = 0.1;
+      cropR = {
+        x: cr.width * p,
+        y: cr.height * p,
+        w: cr.width * (1 - 2*p),
+        h: cr.height * (1 - 2*p)
+      };
+      updateCropBox();
+    }
+
+    function updateCropBox(){
+      cropBox.style.left = cropR.x + 'px';
+      cropBox.style.top = cropR.y + 'px';
+      cropBox.style.width = cropR.w + 'px';
+      cropBox.style.height = cropR.h + 'px';
+    }
+
+    let dragType = null;
+    let dragStart = {x:0,y:0,r:null};
+
+    cropBox.addEventListener('touchstart', handleDragStart, {passive:false});
+    cropBox.addEventListener('mousedown', handleDragStart);
+
+    function handleDragStart(e){
+      e.preventDefault();
+      const t = e.target;
+      const pt = e.touches ? e.touches[0] : e;
+
+      if(t.classList.contains('crop-handle')){
+        dragType = t.dataset.h;
+      } else {
+        dragType = 'move';
+      }
+      dragStart = {x:pt.clientX, y:pt.clientY, r:{...cropR}};
+
+      document.addEventListener('touchmove', handleDragMove, {passive:false});
+      document.addEventListener('touchend', handleDragEnd);
+      document.addEventListener('mousemove', handleDragMove);
+      document.addEventListener('mouseup', handleDragEnd);
+    }
+
+    function handleDragMove(e){
+      e.preventDefault();
+      const pt = e.touches ? e.touches[0] : e;
+      const dx = pt.clientX - dragStart.x;
+      const dy = pt.clientY - dragStart.y;
+      const r = dragStart.r;
+      const cw = parseFloat(cropContainer.style.width);
+      const ch = parseFloat(cropContainer.style.height);
+
+      if(dragType==='move'){
+        cropR.x = Math.max(0, Math.min(cw - r.w, r.x + dx));
+        cropR.y = Math.max(0, Math.min(ch - r.h, r.y + dy));
+      } else if(dragType==='br'){
+        cropR.w = Math.max(50, Math.min(cw - r.x, r.w + dx));
+        cropR.h = Math.max(50, Math.min(ch - r.y, r.h + dy));
+      } else if(dragType==='tl'){
+        const nx = Math.max(0, r.x + dx);
+        const ny = Math.max(0, r.y + dy);
+        cropR.w = Math.max(50, r.w - (nx - r.x));
+        cropR.h = Math.max(50, r.h - (ny - r.y));
+        cropR.x = nx;
+        cropR.y = ny;
+      } else if(dragType==='tr'){
+        const ny = Math.max(0, r.y + dy);
+        cropR.w = Math.max(50, Math.min(cw - r.x, r.w + dx));
+        cropR.h = Math.max(50, r.h - (ny - r.y));
+        cropR.y = ny;
+      } else if(dragType==='bl'){
+        const nx = Math.max(0, r.x + dx);
+        cropR.w = Math.max(50, r.w - (nx - r.x));
+        cropR.h = Math.max(50, Math.min(ch - r.y, r.h + dy));
+        cropR.x = nx;
+      }
+      updateCropBox();
+    }
+
+    function handleDragEnd(){
+      dragType = null;
+      document.removeEventListener('touchmove', handleDragMove);
+      document.removeEventListener('touchend', handleDragEnd);
+      document.removeEventListener('mousemove', handleDragMove);
+      document.removeEventListener('mouseup', handleDragEnd);
+    }
+
+    document.getElementById('cropApply').addEventListener('click',()=>{
+      var dispW = parseFloat(cropContainer.style.width);
+      var dispH = parseFloat(cropContainer.style.height);
+      var scaleX = canvas.width / dispW;
+      var scaleY = canvas.height / dispH;
+
+      var sx = Math.round(cropR.x * scaleX);
+      var sy = Math.round(cropR.y * scaleY);
+      var sw = Math.round(cropR.w * scaleX);
+      var sh = Math.round(cropR.h * scaleY);
+
+      sw = Math.min(sw, canvas.width - sx);
+      sh = Math.min(sh, canvas.height - sy);
+
+      var tempC = document.createElement('canvas');
+      tempC.width = sw;
+      tempC.height = sh;
+      var tempCtx = tempC.getContext('2d');
+      tempCtx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      var croppedImg = new Image();
+      croppedImg.onload = function(){
+        origImg = croppedImg;
+        rotation = 0;
+        cropping = false;
+        cropContainer.classList.remove('active');
+        document.getElementById('cropToggle').classList.remove('active');
+        document.getElementById('cropApply').classList.remove('show');
+        drawCanvas();
+      };
+      croppedImg.src = tempC.toDataURL('image/png');
+    });
+
+    document.getElementById('editorCancel').addEventListener('click', closeEditor);
+    document.getElementById('editorClose').addEventListener('click', closeEditor);
+    editorBackdrop.addEventListener('click', closeEditor);
+
+    document.getElementById('editorSave').addEventListener('click',()=>{
+      drawCanvas();
+      var data = canvas.toDataURL('image/jpeg', 0.97);
+      saveImg(editId, data);
+      toast('تصویر محفوظ ہو گئی ✅');
+      closeEditor();
+      refresh();
+
+      if(viewer.classList.contains('open')){
+        var d = getList()[viewerIdx];
+        if(d && d.id===editId) showInViewer(d);
+      }
+    });
+
+    const settingsBackdrop = document.getElementById('settingsBackdrop');
+    const settingsModal = document.getElementById('settingsModal');
+
+    function openSettings(){
+      renderStats();
+      settingsBackdrop.classList.add('open');
+      settingsModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSettings(){
+      settingsBackdrop.classList.remove('open');
+      settingsModal.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('settingsBtn').addEventListener('click', openSettings);
+    document.getElementById('settingsClose').addEventListener('click', closeSettings);
+    settingsBackdrop.addEventListener('click', closeSettings);
+
+    function renderStats(){
+      var total=0, topId=null, topC=0;
+      Object.entries(reads).forEach(function(entry){
+        var id = entry[0], c = entry[1];
+        total+=c;
+        if(c>topC){ topC=c; topId=+id; }
+      });
+      var allDaroods = getDaroods();
+      var topD = topId ? allDaroods.find(function(d){ return d.id===topId; }) : null;
+      var imgC = Object.keys(images).length;
+
+      document.getElementById('statsBox').innerHTML = `
+        <div class="stat-row"><span>کل درود</span><span class="val">${toUrdu(daroodCount)}</span></div>
+        <div class="stat-row"><span>کل پڑھے گئے</span><span class="val">${toUrdu(total)}</span></div>
+        <div class="stat-row"><span>پسندیدہ</span><span class="val">${toUrdu(favs.length)}</span></div>
+        <div class="stat-row"><span>تصاویر</span><span class="val">${toUrdu(imgC)} / ${toUrdu(daroodCount)}</span></div>
+        <div class="stat-row"><span>سب سے زیادہ پڑھا</span><span class="val">${topD ? ('درود ' + toUrdu(topD.num)) : '—'}</span></div>
+      `;
+    }
+
+    const fontLabel = document.getElementById('fontLabel');
+    const updateFontLabel = () => fontLabel.textContent = toUrdu(config.fontSize);
+    updateFontLabel();
+
+    document.getElementById('fontPlus').addEventListener('click',()=>{
+      config.fontSize = Math.min(config.fontSize+1,20);
+      ls.set('darood_settings',config);
+      updateFontLabel();
+      refresh();
+    });
+
+    document.getElementById('fontMinus').addEventListener('click',()=>{
+      config.fontSize = Math.max(config.fontSize-1,9);
+      ls.set('darood_settings',config);
+      updateFontLabel();
+      refresh();
+    });
+
+    document.getElementById('clearStats').addEventListener('click',()=>{
+      if(confirm('اعداد صاف کریں؟')){
+        reads = {};
+        ls.set('darood_read_counts',reads);
+        toast('صاف ہو گیا');
+        renderStats();
+        refresh();
+      }
+    });
+
+    document.getElementById('exportData').addEventListener('click',()=>{
+      const data = {favorites:favs, readCounts:reads, images, settings:config};
+      const blob = new Blob([JSON.stringify(data)],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'guldasta-e-darood-backup.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('برآمد ہو گیا');
+    });
+
+    document.getElementById('importData').addEventListener('click',()=>{
+      document.getElementById('importInput').click();
+    });
+
+    document.getElementById('importInput').addEventListener('change',e=>{
+      const f = e.target.files[0];
+      if(!f) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const d = JSON.parse(ev.target.result);
+          if(d.favorites){ favs=d.favorites; ls.set('darood_favorites',favs); }
+          if(d.readCounts){ reads=d.readCounts; ls.set('darood_read_counts',reads); }
+          if(d.images){ images=d.images; ls.set('darood_images',images); }
+          if(d.settings){ config=d.settings; ls.set('darood_settings',config); }
+          toast('درآمد ہو گیا');
+          refresh();
+          renderStats();
+        } catch{ toast('فائل خراب ہے'); }
+      };
+      reader.readAsText(f);
+      e.target.value = '';
+    });
+
+    document.getElementById('clearAll').addEventListener('click',()=>{
+      if(confirm('تمام ڈیٹا صاف کریں؟')){
+        favs=[]; reads={}; images={}; config={fontSize:12}; customTitles={}; daroodCount=33;
+        ls.set('darood_favorites',favs);
+        ls.set('darood_read_counts',reads);
+        ls.set('darood_images',images);
+        ls.set('darood_settings',config);
+        ls.set('darood_titles',customTitles);
+        ls.set('darood_count',daroodCount);
+        toast('سب صاف ہو گیا');
+        refresh();
+        closeSettings();
+      }
+    });
+
+    function setTodayTip(){
+      var d = new Date();
+      var idx = ((d.getFullYear()*366 + d.getMonth()*31 + d.getDate()) % daroodCount) + 1;
+      document.getElementById('todayTip').textContent = '🌸 آج کا درود: درود نمبر ' + toUrdu(idx);
+    }
+
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    }
+
+    setTodayTip();
+    renderAll();
+  </script>
+</body>
+</html>
