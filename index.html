@@ -2,15 +2,39 @@
 <html dir="rtl" lang="ur">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#16a34a">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#14532d">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="گلدستۂ درود">
+  <meta name="application-name" content="گلدستۂ درود">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="msapplication-TileColor" content="#16a34a">
+  <meta name="msapplication-tap-highlight" content="no">
+  <meta name="format-detection" content="telephone=no">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="گلدستۂ درود - درود شریف کا خوبصورت مجموعہ۔ روزانہ درود پڑھیں اور ثواب کمائیں۔">
+  <meta name="keywords" content="درود, درود شریف, اسلام, مسلم, دعا, گلدستۂ درود">
+  <meta name="author" content="متین حیدر منہاس">
+  
   <title>گلدستۂ درود</title>
+  
+  <!-- Manifest & Icons -->
   <link rel="manifest" href="./manifest.json">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2316a34a' width='100' height='100' rx='20'/><text y='.86em' x='50' text-anchor='middle' font-size='60'>🕌</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2316a34a' width='100' height='100' rx='20'/><text y='.86em' x='50' text-anchor='middle' font-size='60'>🕌</text></svg>">
+  <link rel="mask-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕌</text></svg>" color="#16a34a">
+  
+  <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -1307,12 +1331,15 @@
   <!-- ========== HEADER ========== -->
   <header class="app-header">
     <div class="header-brand">
-      <span class="brand-icon">🌸</span>
+      <span class="brand-icon">🕌</span>
       <h1>گلدستۂ درود</h1>
     </div>
     <div class="header-actions">
       <button class="header-btn" id="searchBtn" aria-label="تلاش">
         <i class="fas fa-search"></i>
+      </button>
+      <button class="header-btn" id="installBtn" aria-label="انسٹال" style="display:none">
+        <i class="fas fa-download"></i>
       </button>
       <button class="header-btn" id="settingsBtn" aria-label="ترتیبات">
         <i class="fas fa-cog"></i>
@@ -1347,7 +1374,7 @@
           <div class="count" id="daroodCountDisplay">٣٣</div>
           <div class="label">درود شریف</div>
         </div>
-        <div class="icon">🌸</div>
+        <div class="icon">🕌</div>
       </div>
       <div class="card-grid" id="gridAll"></div>
       <div class="empty-state" id="noMatch" style="display:none">
@@ -1478,9 +1505,10 @@
     </div>
 
     <div class="settings-section about-box">
-      <div class="name">🌸 گلدستۂ درود</div>
-      <div class="ver">Version 1.0</div>
+      <div class="name">🕌 گلدستۂ درود</div>
+      <div class="ver">Version 2.0</div>
       <div class="credit">بنایا گیا: متین حیدر منہاس کے لیے</div>
+      <div class="pwa-status" id="pwaStatus" style="margin-top:10px;font-size:11px;color:var(--primary)"></div>
     </div>
   </div>
 
@@ -1618,7 +1646,7 @@
         </div>
         <div class="card-info">
           <div class="card-meta">
-            <div class="card-number">🌸 درود ${toUrdu(d.num)}</div>
+            <div class="card-number">🕌 درود ${toUrdu(d.num)}</div>
             ${titleDisplay ? `<div class="card-title" style="font-size:${config.fontSize}px">${titleDisplay}</div>` : ''}
           </div>
           <button class="card-fav" data-id="${d.id}">
@@ -1844,7 +1872,7 @@
 
     function makePlaceholder(d){
       var titleLine = d.title ? d.title : '';
-      return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><rect fill="#fefce8" width="960" height="540" rx="16"/><text x="480" y="200" text-anchor="middle" font-size="72">🌸</text>' + (titleLine ? '<text x="480" y="300" text-anchor="middle" font-family="serif" font-size="36" fill="#a16207">' + titleLine + '</text>' : '') + '<text x="480" y="360" text-anchor="middle" font-size="28" fill="#718096">درود نمبر ' + d.num + '</text><text x="480" y="440" text-anchor="middle" font-size="20" fill="#16a34a">📷 تصویر لگانے کے لیے کیمرہ دبائیں</text></svg>');
+      return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><rect fill="#fefce8" width="960" height="540" rx="16"/><text x="480" y="200" text-anchor="middle" font-size="72">🕌</text>' + (titleLine ? '<text x="480" y="300" text-anchor="middle" font-family="serif" font-size="36" fill="#a16207">' + titleLine + '</text>' : '') + '<text x="480" y="360" text-anchor="middle" font-size="28" fill="#718096">درود نمبر ' + d.num + '</text><text x="480" y="440" text-anchor="middle" font-size="20" fill="#16a34a">📷 تصویر لگانے کے لیے کیمرہ دبائیں</text></svg>');
     }
 
     function navViewer(dir){
@@ -1900,7 +1928,8 @@
 
     document.getElementById('viewerShare').addEventListener('click',()=>{
       const d = getList()[viewerIdx];
-      const msg = `🌸 ${d.title}\n\nاللہ کے رسول ﷺ پر درود بھیجیں\n\n📖 گلدستۂ درود`;
+      var titleText = d.title ? d.title : ('درود نمبر ' + toUrdu(d.num));
+      var msg = '🕌 ' + titleText + '\n\nاللہ کے رسول ﷺ پر درود بھیجیں\n\n📖 گلدستۂ درود';
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
     });
 
@@ -2339,15 +2368,95 @@
     function setTodayTip(){
       var d = new Date();
       var idx = ((d.getFullYear()*366 + d.getMonth()*31 + d.getDate()) % daroodCount) + 1;
-      document.getElementById('todayTip').textContent = '🌸 آج کا درود: درود نمبر ' + toUrdu(idx);
+      document.getElementById('todayTip').textContent = '🕌 آج کا درود: درود نمبر ' + toUrdu(idx);
     }
 
+    // ==========================================
+    // PWA INSTALL & SERVICE WORKER
+    // ==========================================
+    var deferredPrompt = null;
+    var installBtn = document.getElementById('installBtn');
+    var pwaStatus = document.getElementById('pwaStatus');
+
+    // Check if already installed
+    function isAppInstalled(){
+      return window.matchMedia('(display-mode: standalone)').matches || 
+             window.navigator.standalone === true;
+    }
+
+    // Listen for install prompt
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      deferredPrompt = e;
+      if(installBtn) installBtn.style.display = 'flex';
+    });
+
+    // Handle install button click
+    if(installBtn){
+      installBtn.addEventListener('click', async function(){
+        if(!deferredPrompt) return;
+        deferredPrompt.prompt();
+        var result = await deferredPrompt.userChoice;
+        if(result.outcome === 'accepted'){
+          toast('ایپ انسٹال ہو گئی! 🕌');
+          installBtn.style.display = 'none';
+        }
+        deferredPrompt = null;
+      });
+    }
+
+    // Listen for successful install
+    window.addEventListener('appinstalled', function(){
+      installBtn.style.display = 'none';
+      deferredPrompt = null;
+      toast('گلدستۂ درود انسٹال ہو گئی! 🕌');
+      if(pwaStatus) pwaStatus.textContent = '✅ ایپ انسٹال شدہ';
+    });
+
+    // Update PWA status
+    function updatePwaStatus(){
+      if(!pwaStatus) return;
+      if(isAppInstalled()){
+        pwaStatus.textContent = '✅ ایپ انسٹال شدہ';
+      } else {
+        pwaStatus.textContent = '📲 براؤزر میں چل رہی ہے';
+      }
+    }
+
+    // Register Service Worker
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+      navigator.serviceWorker.register('./sw.js')
+        .then(function(reg){
+          console.log('Service Worker registered:', reg.scope);
+          
+          // Check for updates
+          reg.addEventListener('updatefound', function(){
+            var newWorker = reg.installing;
+            newWorker.addEventListener('statechange', function(){
+              if(newWorker.state === 'installed' && navigator.serviceWorker.controller){
+                toast('نئی اپڈیٹ دستیاب ہے! 🔄');
+              }
+            });
+          });
+        })
+        .catch(function(err){
+          console.log('Service Worker registration failed:', err);
+        });
     }
 
+    // Handle URL parameters for shortcuts
+    var urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('tab') === 'fav'){
+      document.querySelector('[data-tab="fav"]').click();
+    }
+    if(urlParams.get('action') === 'add'){
+      setTimeout(addNewDarood, 500);
+    }
+
+    // Initialize
     setTodayTip();
     renderAll();
+    updatePwaStatus();
   </script>
 </body>
 </html>
