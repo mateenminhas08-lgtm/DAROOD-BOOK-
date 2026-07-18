@@ -377,8 +377,8 @@
     /* ========== CARD GRID ========== */
     .card-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
 
     /* ========== DAROOD CARD ========== */
@@ -399,14 +399,54 @@
       overflow: hidden;
       box-shadow: var(--shadow-sm);
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
       animation: cardEnter 400ms ease-out forwards;
       opacity: 0;
       position: relative;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .darood-card:active {
       transform: scale(0.97);
+    }
+
+    .darood-card.drag-over {
+      transform: scale(1.04);
+      box-shadow: 0 0 0 3px var(--gold-bright), var(--shadow-lg);
+    }
+
+    .darood-card.dragging {
+      opacity: 0.4;
+      transform: scale(0.92);
+    }
+
+    .drag-ghost {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      width: 70vw;
+      max-width: 380px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+      opacity: 0.88;
+      transform: rotate(1deg) scale(0.95);
+      transition: none;
+    }
+
+    .reorder-hint {
+      text-align: center;
+      padding: 8px;
+      font-size: 11px;
+      color: var(--gold-dark);
+      font-family: var(--font-urdu);
+      background: linear-gradient(135deg, rgba(234,179,8,0.1), rgba(22,163,74,0.05));
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
 
@@ -446,7 +486,7 @@
       height: 100%;
       object-fit: contain;
       display: block;
-      background: linear-gradient(145deg, #fefce8, #fef3c7);
+      background: #fefce8;
     }
 
     /* Empty card with plus icon */
@@ -492,6 +532,34 @@
       font-family: var(--font-urdu);
       font-weight: 700;
       pointer-events: none;
+    }
+
+    /* Card edit button */
+    .card-edit-btn {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .card-edit-btn:active {
+      transform: scale(0.9);
+      background: rgba(0,0,0,0.8);
     }
 
     /* Add new card style */
@@ -776,6 +844,16 @@
     .viewer-action.share {
       background: rgba(37,211,102,0.2);
       color: #25d366;
+    }
+
+    .viewer-action.edit {
+      background: rgba(234,179,8,0.25);
+      color: var(--gold-bright);
+    }
+
+    .viewer-action.upload {
+      background: rgba(59,130,246,0.2);
+      color: #60a5fa;
     }
 
     .viewer-action.upload {
@@ -1409,12 +1487,13 @@
       <img id="viewerImg" src="" alt="">
     </div>
     <div class="viewer-bottom">
-      <div class="viewer-actions">
-        <button class="viewer-action nav" id="viewerPrev"><i class="fas fa-chevron-right"></i></button>
+      <div class="viewer-actions" style="direction:ltr">
+        <button class="viewer-action nav" id="viewerPrev"><i class="fas fa-chevron-left"></i></button>
         <button class="viewer-action upload" id="viewerUpload"><i class="fas fa-camera"></i></button>
+        <button class="viewer-action edit" id="viewerEdit"><i class="fas fa-pen"></i></button>
         <button class="viewer-action fav" id="viewerFav"><i class="fas fa-heart"></i></button>
         <button class="viewer-action share" id="viewerShare"><i class="fab fa-whatsapp"></i></button>
-        <button class="viewer-action nav" id="viewerNext"><i class="fas fa-chevron-left"></i></button>
+        <button class="viewer-action nav" id="viewerNext"><i class="fas fa-chevron-right"></i></button>
       </div>
       <div class="viewer-meta">
         <div class="pos" id="viewerPos"></div>
@@ -1456,6 +1535,14 @@
           <i class="fas fa-check"></i>
           <span>لگائیں</span>
         </button>
+        <button class="tool-btn" id="loadUrlBtn">
+          <i class="fas fa-link"></i>
+          <span>URL</span>
+        </button>
+        <button class="tool-btn" id="newImageBtn">
+          <i class="fas fa-camera"></i>
+          <span>نئی</span>
+        </button>
       </div>
       <div class="action-row">
         <button class="editor-cancel" id="editorCancel">منسوخ</button>
@@ -1494,6 +1581,18 @@
     </div>
 
     <div class="settings-section">
+      <h3><i class="fas fa-link"></i> URLs سے تصاویر لوڈ کریں</h3>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:8px;line-height:1.6">
+        ہر لائن میں ایک direct image URL پیسٹ کریں<br>
+        <span style="direction:ltr;display:inline-block">Example: https://i.ibb.co/xxxxx/image.jpg</span>
+      </p>
+      <textarea id="bulkUrlInput" placeholder="URL 1&#10;URL 2&#10;URL 3&#10;..." style="width:100%;min-height:80px;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:11px;direction:ltr;font-family:var(--font-ui);resize:vertical;"></textarea>
+      <div class="btn-row" style="margin-top:8px">
+        <button class="btn-primary" id="loadBulkUrls"><i class="fas fa-cloud-download"></i> URLs لوڈ کریں</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <h3><i class="fas fa-database"></i> ڈیٹا</h3>
       <div class="btn-row">
         <button class="btn-primary" id="exportData"><i class="fas fa-download"></i> برآمد</button>
@@ -1518,6 +1617,42 @@
   <script>
     const COLORS = ['#16a34a','#059669','#0d9488','#7c3aed','#dc2626','#ea580c','#0284c7','#db2777'];
 
+    var DEFAULT_IMAGES = {
+      1: 'https://i.ibb.co/HTWnYQzS/image.png',
+      2: 'https://i.ibb.co/gbwVLbVZ/image-1.png',
+      3: 'https://i.ibb.co/1fbyk3dy/image-2.png',
+      4: 'https://i.ibb.co/Cs3qhhRT/image-3.png',
+      5: 'https://i.ibb.co/rGmxHq7N/image-4.png',
+      6: 'https://i.ibb.co/zH2Q9WjP/image-5.png',
+      7: 'https://i.ibb.co/VWBjKbtd/image-6.png',
+      8: 'https://i.ibb.co/JWTjRzFY/image-7.png',
+      9: 'https://i.ibb.co/mnjRdT9/image-8.png',
+      10: 'https://i.ibb.co/rftYfBCL/image-9.png',
+      11: 'https://i.ibb.co/0V8Wzqx1/image-10.png',
+      12: 'https://i.ibb.co/0pnG3qwK/image-11.png',
+      13: 'https://i.ibb.co/7xWQdPL6/image-13.png',
+      14: 'https://i.ibb.co/JFnjdSy4/image-14.png',
+      15: 'https://i.ibb.co/zTchrphF/image-15.png',
+      16: 'https://i.ibb.co/XrjBQPVW/image-16.png',
+      17: 'https://i.ibb.co/gbcY0M0Y/image-17.png',
+      18: 'https://i.ibb.co/q3dKb2H8/image-18.png',
+      19: 'https://i.ibb.co/sL73nvF/image-19.png',
+      20: 'https://i.ibb.co/9HJB1JBf/image-20.png',
+      21: 'https://i.ibb.co/v6DnCHpV/image-21.png',
+      22: 'https://i.ibb.co/TqWTmVt6/image-22.png',
+      23: 'https://i.ibb.co/QjTP4L72/image-23.png',
+      24: 'https://i.ibb.co/4wPvyCmQ/image-24.png',
+      25: 'https://i.ibb.co/xtM6PBR5/image-25.png',
+      26: 'https://i.ibb.co/twBVkpft/image-26.png',
+      27: 'https://i.ibb.co/zWRwNQWM/image-27.png',
+      28: 'https://i.ibb.co/G4vShcbQ/image-28.png',
+      29: 'https://i.ibb.co/6Jg1ZZDz/image-29.png',
+      30: 'https://i.ibb.co/ynF4K2DH/image-30.png',
+      31: 'https://i.ibb.co/YBWPMw7d/image-31.png',
+      32: 'https://i.ibb.co/kgX4y3TB/image-32.png',
+      33: 'https://i.ibb.co/Zp7J1SpS/image-33.png'
+    };
+
     const UD = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
     const toUrdu = n => String(n).split('').map(d=>UD[+d]||d).join('');
 
@@ -1532,28 +1667,58 @@
     let config = ls.get('darood_settings',{fontSize:12});
     let customTitles = ls.get('darood_titles',{});
     let daroodCount = ls.get('darood_count', 33);
+    let daroodOrder = ls.get('darood_order', null);
+
+    function ensureOrder(){
+      if(!daroodOrder || daroodOrder.length !== daroodCount){
+        daroodOrder = [];
+        for(var i = 1; i <= daroodCount; i++) daroodOrder.push(i);
+        ls.set('darood_order', daroodOrder);
+      }
+    }
+
+    // Reset order on version change to apply new image mapping
+    var appVer = ls.get('darood_app_ver', 0);
+    if(appVer < 3){
+      daroodOrder = null;
+      ls.set('darood_app_ver', 3);
+    }
+
+    ensureOrder();
 
     function getDaroods(){
+      ensureOrder();
       var list = [];
-      for(var i = 1; i <= daroodCount; i++){
+      for(var i = 0; i < daroodOrder.length; i++){
+        var id = daroodOrder[i];
         list.push({
-          id: i,
-          num: i,
-          title: customTitles[i] || '',
-          color: COLORS[(i-1) % 8]
+          id: id,
+          num: id,
+          title: customTitles[id] || '',
+          color: COLORS[(id-1) % 8]
         });
       }
       return list;
     }
 
+    function swapDaroods(fromId, toId){
+      ensureOrder();
+      var fi = daroodOrder.indexOf(fromId);
+      var ti = daroodOrder.indexOf(toId);
+      if(fi === -1 || ti === -1 || fi === ti) return;
+      daroodOrder.splice(fi, 1);
+      daroodOrder.splice(ti, 0, fromId);
+      ls.set('darood_order', daroodOrder);
+    }
+
     function addNewDarood(){
       daroodCount++;
+      daroodOrder.push(daroodCount);
       ls.set('darood_count', daroodCount);
+      ls.set('darood_order', daroodOrder);
       refresh();
       toast('نیا درود شامل ہو گیا');
       setTimeout(function(){
-        var grid = document.getElementById('gridAll');
-        if(grid) grid.scrollTop = grid.scrollHeight;
         window.scrollTo(0, document.body.scrollHeight);
       }, 100);
     }
@@ -1569,9 +1734,12 @@
         delete images[id];
         delete customTitles[id];
         delete reads[id];
-        favs = favs.filter(f => f !== id);
+        favs = favs.filter(function(f){ return f !== id; });
+        var oi = daroodOrder.indexOf(id);
+        if(oi !== -1) daroodOrder.splice(oi, 1);
         daroodCount--;
         ls.set('darood_count', daroodCount);
+        ls.set('darood_order', daroodOrder);
         ls.set('darood_images', images);
         ls.set('darood_titles', customTitles);
         ls.set('darood_read_counts', reads);
@@ -1584,7 +1752,7 @@
     }
 
     const isFav = id => favs.includes(id);
-    const getImg = id => images[id] || null;
+    function getImg(id){ return images[id] || DEFAULT_IMAGES[id] || null; }
 
     function toggleFav(id){
       if(isFav(id)){
@@ -1621,42 +1789,41 @@
     let searchQ = '';
 
     function buildCard(d,i){
-      const card = document.createElement('div');
+      var card = document.createElement('div');
       card.className = 'darood-card';
       card.style.animationDelay = (i*35)+'ms';
 
-      const img = getImg(d.id);
-      const rc = reads[d.id]||0;
-      const fav = isFav(d.id);
+      var img = getImg(d.id);
+      var rc = reads[d.id]||0;
+      var fav = isFav(d.id);
 
-      let thumbHTML = img
-        ? `<img src="${img}" alt="${d.title}">`
-        : `<div class="card-empty">
-             <div class="plus-icon"><i class="fas fa-plus"></i></div>
-             <div class="plus-label">تصویر لگائیں</div>
-           </div>`;
+      var thumbHTML = img
+        ? '<img src="' + img + '" alt="درود ' + d.num + '">'
+        : '<div class="card-empty"><div class="plus-icon"><i class="fas fa-plus"></i></div><div class="plus-label">تصویر لگائیں</div></div>';
 
       var titleDisplay = d.title ? d.title : '';
 
-      card.innerHTML = `
-        <div class="card-accent" style="background:linear-gradient(90deg,${d.color},${d.color}cc)"></div>
-        <div class="card-thumb">
-          ${rc>0?`<div class="read-badge">${toUrdu(rc)}</div>`:''}
-          <div class="card-frame">${thumbHTML}</div>
-        </div>
-        <div class="card-info">
-          <div class="card-meta">
-            <div class="card-number">🕌 درود ${toUrdu(d.num)}</div>
-            ${titleDisplay ? `<div class="card-title" style="font-size:${config.fontSize}px">${titleDisplay}</div>` : ''}
-          </div>
-          <button class="card-fav" data-id="${d.id}">
-            <i class="fas fa-heart ${fav?'heart-filled':'heart-empty'}"></i>
-          </button>
-        </div>
-      `;
+      card.innerHTML = 
+        '<div class="card-accent" style="background:linear-gradient(90deg,' + d.color + ',' + d.color + 'cc)"></div>' +
+        '<div class="card-thumb">' +
+          (rc>0 ? '<div class="read-badge">' + toUrdu(rc) + '</div>' : '') +
+          (img ? '<button class="card-edit-btn" data-id="' + d.id + '"><i class="fas fa-pen"></i></button>' : '') +
+          '<div class="card-frame">' + thumbHTML + '</div>' +
+        '</div>' +
+        '<div class="card-info">' +
+          '<div class="card-meta">' +
+            '<div class="card-number">🕌 درود ' + toUrdu(d.num) + '</div>' +
+            (titleDisplay ? '<div class="card-title" style="font-size:' + config.fontSize + 'px">' + titleDisplay + '</div>' : '') +
+          '</div>' +
+          '<button class="card-fav" data-id="' + d.id + '">' +
+            '<i class="fas fa-heart ' + (fav ? 'heart-filled' : 'heart-empty') + '"></i>' +
+          '</button>' +
+        '</div>';
 
-      card.addEventListener('click', e => {
-        if(e.target.closest('.card-fav')) return;
+      // Click on card - view or upload (skip if just finished dragging)
+      card.addEventListener('click', function(e){
+        if(dragState.justDropped) return;
+        if(e.target.closest('.card-fav') || e.target.closest('.card-edit-btn')) return;
         e.stopPropagation();
         var hasImage = !!getImg(d.id);
         if(hasImage){
@@ -1666,8 +1833,19 @@
         }
       });
 
+      // Edit button click
+      var editBtn = card.querySelector('.card-edit-btn');
+      if(editBtn){
+        editBtn.addEventListener('click', function(e){
+          e.preventDefault();
+          e.stopPropagation();
+          editExistingImage(d.id);
+        });
+      }
+
+      // Favorite button click
       var favBtn = card.querySelector('.card-fav');
-      favBtn.addEventListener('click', e => {
+      favBtn.addEventListener('click', function(e){
         e.preventDefault();
         e.stopPropagation();
         var added = toggleFav(d.id);
@@ -1679,6 +1857,183 @@
       });
 
       return card;
+    }
+
+    function editExistingImage(id){
+      var imgData = getImg(id);
+      if(!imgData) return;
+      editId = id;
+
+      // If it's an external URL, fetch it as blob first to avoid CORS canvas taint
+      if(imgData.startsWith('http')){
+        toast('تصویر لوڈ ہو رہی ہے...');
+        fetch(imgData)
+          .then(function(r){ return r.blob(); })
+          .then(function(blob){
+            var reader = new FileReader();
+            reader.onload = function(e){ openEditor(e.target.result); };
+            reader.readAsDataURL(blob);
+          })
+          .catch(function(){
+            // CORS blocked — try loading with crossOrigin as fallback
+            var tempImg = new Image();
+            tempImg.crossOrigin = 'anonymous';
+            tempImg.onload = function(){
+              var c = document.createElement('canvas');
+              c.width = tempImg.naturalWidth;
+              c.height = tempImg.naturalHeight;
+              c.getContext('2d').drawImage(tempImg, 0, 0);
+              try {
+                openEditor(c.toDataURL('image/png'));
+              } catch(err){
+                toast('تصویر ایڈٹ نہیں ہو سکی — پہلے گیلری سے اپ لوڈ کریں');
+              }
+            };
+            tempImg.onerror = function(){
+              toast('تصویر لوڈ نہیں ہو سکی — پہلے گیلری سے اپ لوڈ کریں');
+            };
+            tempImg.src = imgData;
+          });
+      } else {
+        openEditor(imgData);
+      }
+    }
+
+    // ==========================================
+    // DRAG & DROP REORDER (touch + mouse)
+    // ==========================================
+    var dragState = {
+      active: false,
+      id: null,
+      ghost: null,
+      sourceCard: null,
+      longPressTimer: null,
+      startX: 0,
+      startY: 0,
+      currentOverId: null,
+      justDropped: false
+    };
+
+    function startDragFromCard(daroodId, card, clientX, clientY){
+      dragState.active = true;
+      dragState.id = daroodId;
+      dragState.sourceCard = card;
+
+      card.classList.add('dragging');
+
+      // create ghost
+      var ghost = card.cloneNode(true);
+      ghost.className = 'drag-ghost';
+      ghost.style.left = (clientX - 80) + 'px';
+      ghost.style.top = (clientY - 80) + 'px';
+      document.body.appendChild(ghost);
+      dragState.ghost = ghost;
+
+      navigator.vibrate && navigator.vibrate(30);
+    }
+
+    function moveDrag(clientX, clientY){
+      if(!dragState.active) return;
+      dragState.ghost.style.left = (clientX - 80) + 'px';
+      dragState.ghost.style.top = (clientY - 80) + 'px';
+
+      // find card under finger
+      dragState.ghost.style.display = 'none';
+      var el = document.elementFromPoint(clientX, clientY);
+      dragState.ghost.style.display = '';
+
+      var targetCard = el ? el.closest('.darood-card') : null;
+      var targetId = targetCard ? parseInt(targetCard.dataset.daroodId) : null;
+
+      // clear old highlight
+      if(dragState.currentOverId !== targetId){
+        var allCards = document.querySelectorAll('.darood-card.drag-over');
+        for(var i = 0; i < allCards.length; i++) allCards[i].classList.remove('drag-over');
+        dragState.currentOverId = targetId;
+      }
+
+      if(targetCard && targetId && targetId !== dragState.id && !targetCard.classList.contains('add-card')){
+        targetCard.classList.add('drag-over');
+      }
+    }
+
+    function endDrag(){
+      if(!dragState.active) return;
+
+      var didSwap = false;
+      if(dragState.currentOverId && dragState.currentOverId !== dragState.id){
+        swapDaroods(dragState.id, dragState.currentOverId);
+        toast('ترتیب بدل گئی ✅');
+        didSwap = true;
+      }
+
+      // cleanup
+      if(dragState.ghost) dragState.ghost.remove();
+      var allCards = document.querySelectorAll('.darood-card.dragging, .darood-card.drag-over');
+      for(var i = 0; i < allCards.length; i++){
+        allCards[i].classList.remove('dragging');
+        allCards[i].classList.remove('drag-over');
+      }
+
+      dragState.active = false;
+      dragState.id = null;
+      dragState.ghost = null;
+      dragState.sourceCard = null;
+      dragState.currentOverId = null;
+
+      // prevent click firing right after drop
+      dragState.justDropped = true;
+      setTimeout(function(){ dragState.justDropped = false; }, 300);
+
+      refresh();
+    }
+
+    function cancelLongPress(){
+      if(dragState.longPressTimer){
+        clearTimeout(dragState.longPressTimer);
+        dragState.longPressTimer = null;
+      }
+    }
+
+    function attachDragEvents(card, daroodId){
+      card.dataset.daroodId = daroodId;
+
+      // Touch events (mobile)
+      card.addEventListener('touchstart', function(e){
+        if(e.target.closest('.card-fav') || e.target.closest('.card-edit-btn')) return;
+        var touch = e.touches[0];
+        dragState.startX = touch.clientX;
+        dragState.startY = touch.clientY;
+
+        dragState.longPressTimer = setTimeout(function(){
+          startDragFromCard(daroodId, card, touch.clientX, touch.clientY);
+        }, 500);
+      }, {passive: true});
+
+      card.addEventListener('touchmove', function(e){
+        var touch = e.touches[0];
+        var dx = Math.abs(touch.clientX - dragState.startX);
+        var dy = Math.abs(touch.clientY - dragState.startY);
+
+        if(!dragState.active && (dx > 10 || dy > 10)){
+          cancelLongPress();
+        }
+
+        if(dragState.active){
+          e.preventDefault();
+          moveDrag(touch.clientX, touch.clientY);
+        }
+      }, {passive: false});
+
+      card.addEventListener('touchend', function(){
+        cancelLongPress();
+        if(dragState.active) endDrag();
+      }, {passive: true});
+
+      card.addEventListener('touchcancel', function(){
+        cancelLongPress();
+        if(dragState.active) endDrag();
+      }, {passive: true});
     }
 
     function renderAll(){
@@ -1700,7 +2055,19 @@
       } else {
         noMatch.style.display = 'none';
         grid.style.display = '';
-        list.forEach(function(d,i){ grid.appendChild(buildCard(d,i)); });
+
+        if(!searchQ && list.length > 1){
+          var hint = document.createElement('div');
+          hint.className = 'reorder-hint';
+          hint.innerHTML = '<i class="fas fa-arrows-up-down"></i> ترتیب بدلنے کے لیے دیر تک دبائیں اور گھسیٹیں';
+          grid.parentNode.insertBefore(hint, grid);
+        }
+
+        list.forEach(function(d,i){
+          var card = buildCard(d,i);
+          if(!searchQ) attachDragEvents(card, d.id);
+          grid.appendChild(card);
+        });
         if(!searchQ){
           grid.appendChild(buildAddCard());
         }
@@ -1753,6 +2120,8 @@
 
     function refresh(){
       document.getElementById('daroodCountDisplay').textContent = toUrdu(daroodCount);
+      var oldHints = document.querySelectorAll('.reorder-hint');
+      for(var i = 0; i < oldHints.length; i++) oldHints[i].remove();
       if(activeTab==='all') renderAll();
       else renderFav();
     }
@@ -1872,7 +2241,7 @@
 
     function makePlaceholder(d){
       var titleLine = d.title ? d.title : '';
-      return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><rect fill="#fefce8" width="960" height="540" rx="16"/><text x="480" y="200" text-anchor="middle" font-size="72">🕌</text>' + (titleLine ? '<text x="480" y="300" text-anchor="middle" font-family="serif" font-size="36" fill="#a16207">' + titleLine + '</text>' : '') + '<text x="480" y="360" text-anchor="middle" font-size="28" fill="#718096">درود نمبر ' + d.num + '</text><text x="480" y="440" text-anchor="middle" font-size="20" fill="#16a34a">📷 تصویر لگانے کے لیے کیمرہ دبائیں</text></svg>');
+      return 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><rect fill="#fefce8" width="960" height="540" rx="16"/><text x="480" y="200" text-anchor="middle" font-size="64">🕌</text>' + (titleLine ? '<text x="480" y="290" text-anchor="middle" font-family="serif" font-size="32" fill="#a16207">' + titleLine + '</text>' : '') + '<text x="480" y="350" text-anchor="middle" font-size="22" fill="#718096">درود نمبر ' + d.num + '</text><text x="480" y="420" text-anchor="middle" font-size="16" fill="#16a34a">📷 کیمرہ دبائیں</text></svg>');
     }
 
     function navViewer(dir){
@@ -1915,8 +2284,8 @@
     }
 
     document.getElementById('viewerClose').addEventListener('click', closeViewer);
-    document.getElementById('viewerPrev').addEventListener('click',()=>navViewer(-1));
-    document.getElementById('viewerNext').addEventListener('click',()=>navViewer(1));
+    document.getElementById('viewerPrev').addEventListener('click',function(){ navViewer(-1); });
+    document.getElementById('viewerNext').addEventListener('click',function(){ navViewer(1); });
     document.getElementById('zoomIn').addEventListener('click',()=>{ viewerZoom=Math.min(viewerZoom+0.5,4); applyZoom(); });
     document.getElementById('zoomOut').addEventListener('click',()=>{ viewerZoom=Math.max(viewerZoom-0.5,0.5); if(viewerZoom<=1){panX=0;panY=0;} applyZoom(); });
 
@@ -1933,9 +2302,14 @@
       window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`,'_blank');
     });
 
-    document.getElementById('viewerUpload').addEventListener('click',()=>{
-      const d = getList()[viewerIdx];
+    document.getElementById('viewerUpload').addEventListener('click',function(){
+      var d = getList()[viewerIdx];
       triggerUpload(d.id);
+    });
+
+    document.getElementById('viewerEdit').addEventListener('click',function(){
+      var d = getList()[viewerIdx];
+      editExistingImage(d.id);
     });
 
     let touchX=0, touchY=0, touchT=0, lastTap=0, dragging=false, dragS={x:0,y:0};
@@ -1980,15 +2354,15 @@
       const dy = e.changedTouches[0].clientY - touchY;
       const dt = Date.now() - touchT;
       if(Math.abs(dx)>50 && dt<350 && Math.abs(dy)<80){
-        if(dx<0) navViewer(1); else navViewer(-1);
+        if(dx < 0) navViewer(1); else navViewer(-1);
       }
     },{passive:true});
 
     document.addEventListener('keydown',e=>{
       if(!viewer.classList.contains('open')) return;
       if(e.key==='Escape') closeViewer();
-      if(e.key==='ArrowLeft') navViewer(1);
-      if(e.key==='ArrowRight') navViewer(-1);
+      if(e.key==='ArrowRight') navViewer(1);
+      if(e.key==='ArrowLeft') navViewer(-1);
     });
 
     let editId = null;
@@ -2042,13 +2416,17 @@
       document.getElementById('cropToggle').classList.remove('active');
       document.getElementById('cropApply').classList.remove('show');
 
-      const img = new Image();
-      img.onload = () => {
+      var img = new Image();
+      if(dataUrl.startsWith('http')) img.crossOrigin = 'anonymous';
+      img.onload = function(){
         origImg = img;
         drawCanvas();
         editorBackdrop.classList.add('open');
         editorSheet.classList.add('open');
         document.body.style.overflow = 'hidden';
+      };
+      img.onerror = function(){
+        toast('تصویر لوڈ نہیں ہو سکی ❌');
       };
       img.src = dataUrl;
     }
@@ -2232,7 +2610,61 @@
     document.getElementById('editorClose').addEventListener('click', closeEditor);
     editorBackdrop.addEventListener('click', closeEditor);
 
-    document.getElementById('editorSave').addEventListener('click',()=>{
+    // Load from URL button
+    document.getElementById('loadUrlBtn').addEventListener('click', function(){
+      var url = prompt('تصویر کا URL پیسٹ کریں:\n\nPaste image URL:');
+      if(!url || !url.trim()) return;
+      url = url.trim();
+      
+      toast('تصویر لوڈ ہو رہی ہے...');
+      
+      var img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = function(){
+        origImg = img;
+        rotation = 0;
+        cropping = false;
+        cropContainer.classList.remove('active');
+        document.getElementById('cropToggle').classList.remove('active');
+        document.getElementById('cropApply').classList.remove('show');
+        drawCanvas();
+        toast('تصویر لوڈ ہو گئی ✅');
+      };
+      img.onerror = function(){
+        toast('تصویر لوڈ نہیں ہو سکی ❌');
+      };
+      img.src = url;
+    });
+
+    // New image button (pick from gallery while in editor)
+    document.getElementById('newImageBtn').addEventListener('click', function(){
+      var tempInput = document.createElement('input');
+      tempInput.type = 'file';
+      tempInput.accept = 'image/*';
+      tempInput.onchange = function(e){
+        var f = e.target.files && e.target.files[0];
+        if(!f) return;
+        var reader = new FileReader();
+        reader.onload = function(ev){
+          var img = new Image();
+          img.onload = function(){
+            origImg = img;
+            rotation = 0;
+            cropping = false;
+            cropContainer.classList.remove('active');
+            document.getElementById('cropToggle').classList.remove('active');
+            document.getElementById('cropApply').classList.remove('show');
+            drawCanvas();
+            toast('نئی تصویر لوڈ ہو گئی');
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(f);
+      };
+      tempInput.click();
+    });
+
+    document.getElementById('editorSave').addEventListener('click',function(){
       drawCanvas();
       var data = canvas.toDataURL('image/jpeg', 0.97);
       saveImg(editId, data);
@@ -2304,7 +2736,7 @@
       refresh();
     });
 
-    document.getElementById('clearStats').addEventListener('click',()=>{
+    document.getElementById('clearStats').addEventListener('click',function(){
       if(confirm('اعداد صاف کریں؟')){
         reads = {};
         ls.set('darood_read_counts',reads);
@@ -2314,8 +2746,70 @@
       }
     });
 
-    document.getElementById('exportData').addEventListener('click',()=>{
-      const data = {favorites:favs, readCounts:reads, images, settings:config};
+    // Bulk URL loading
+    document.getElementById('loadBulkUrls').addEventListener('click',function(){
+      var textarea = document.getElementById('bulkUrlInput');
+      var text = textarea.value.trim();
+      if(!text){
+        toast('کوئی URL نہیں ملا');
+        return;
+      }
+      
+      var urls = text.split('\n').map(function(u){ return u.trim(); }).filter(function(u){ return u && u.length > 5; });
+      if(urls.length === 0){
+        toast('کوئی URL نہیں ملا');
+        return;
+      }
+      
+      toast(toUrdu(urls.length) + ' URLs لوڈ ہو رہے ہیں...');
+      var loaded = 0;
+      var failed = 0;
+      
+      urls.forEach(function(url, index){
+        var daroodId = index + 1;
+        if(daroodId > daroodCount){
+          daroodCount = daroodId;
+          ls.set('darood_count', daroodCount);
+        }
+        
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function(){
+          // Convert to base64 and save
+          var canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth;
+          canvas.height = img.naturalHeight;
+          var ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0);
+          try {
+            var dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+            images[daroodId] = dataUrl;
+            ls.set('darood_images', images);
+            loaded++;
+          } catch(e) {
+            failed++;
+          }
+          checkDone();
+        };
+        img.onerror = function(){
+          failed++;
+          checkDone();
+        };
+        img.src = url;
+      });
+      
+      function checkDone(){
+        if(loaded + failed >= urls.length){
+          toast(toUrdu(loaded) + ' تصاویر لوڈ ہو گئیں' + (failed > 0 ? '، ' + toUrdu(failed) + ' ناکام' : ''));
+          textarea.value = '';
+          refresh();
+          renderStats();
+        }
+      }
+    });
+
+    document.getElementById('exportData').addEventListener('click',function(){
+      var data = {favorites:favs, readCounts:reads, images:images, settings:config, titles:customTitles, count:daroodCount, order:daroodOrder};
       const blob = new Blob([JSON.stringify(data)],{type:'application/json'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -2330,35 +2824,41 @@
       document.getElementById('importInput').click();
     });
 
-    document.getElementById('importInput').addEventListener('change',e=>{
-      const f = e.target.files[0];
+    document.getElementById('importInput').addEventListener('change',function(e){
+      var f = e.target.files[0];
       if(!f) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
+      var reader = new FileReader();
+      reader.onload = function(ev){
         try {
-          const d = JSON.parse(ev.target.result);
+          var d = JSON.parse(ev.target.result);
           if(d.favorites){ favs=d.favorites; ls.set('darood_favorites',favs); }
           if(d.readCounts){ reads=d.readCounts; ls.set('darood_read_counts',reads); }
           if(d.images){ images=d.images; ls.set('darood_images',images); }
           if(d.settings){ config=d.settings; ls.set('darood_settings',config); }
+          if(d.titles){ customTitles=d.titles; ls.set('darood_titles',customTitles); }
+          if(d.count){ daroodCount=d.count; ls.set('darood_count',daroodCount); }
+          if(d.order){ daroodOrder=d.order; ls.set('darood_order',daroodOrder); }
+          ensureOrder();
           toast('درآمد ہو گیا');
           refresh();
           renderStats();
-        } catch{ toast('فائل خراب ہے'); }
+        } catch(err){ toast('فائل خراب ہے'); }
       };
       reader.readAsText(f);
       e.target.value = '';
     });
 
-    document.getElementById('clearAll').addEventListener('click',()=>{
+    document.getElementById('clearAll').addEventListener('click',function(){
       if(confirm('تمام ڈیٹا صاف کریں؟')){
-        favs=[]; reads={}; images={}; config={fontSize:12}; customTitles={}; daroodCount=33;
+        favs=[]; reads={}; images={}; config={fontSize:12}; customTitles={}; daroodCount=33; daroodOrder=null;
         ls.set('darood_favorites',favs);
         ls.set('darood_read_counts',reads);
         ls.set('darood_images',images);
         ls.set('darood_settings',config);
         ls.set('darood_titles',customTitles);
         ls.set('darood_count',daroodCount);
+        ls.set('darood_order',daroodOrder);
+        ensureOrder();
         toast('سب صاف ہو گیا');
         refresh();
         closeSettings();
